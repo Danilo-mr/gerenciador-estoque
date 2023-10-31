@@ -3,7 +3,7 @@ import java.net.InetSocketAddress;
 
 import com.sun.net.httpserver.HttpServer;
 
-import Controller.Router;
+import Controller.*;
 
 public class Application {
     private static int server_port = 8000;
@@ -18,8 +18,8 @@ public class Application {
         try {
 
             server = HttpServer.create(new InetSocketAddress(server_port), 2);
-            server.createContext("/", new Router());
-            server.createContext("/login", new Router());
+            new Router(server);
+            
             server.setExecutor(null); 
             server.start();
 
