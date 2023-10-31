@@ -6,7 +6,9 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,13 +38,13 @@ public class Server {
                 byte[] buffer = new byte[10000];
                 int length = inputStream.read(buffer);
                 String data = new String(buffer, 0, length);
-                         
+
                 try {
                     data = URLDecoder.decode(data, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                
+
                 String[] pairs = data.split("&");
                 for (String pair : pairs) {
                     String[] keyValue = pair.split("=");
@@ -51,24 +53,52 @@ public class Server {
                     }
                 }
 
-                String email = parameters.get("email");
-                String senha = parameters.get("senha");
+                String emailParam = parameters.get("email");
+                String senhaParam = parameters.get("senha");
 
-                conectarBancoDeDados("root", "root");
-                
+                Connection con = conectarBancoDeDados("root", "root");
+
+                String emailBanco = null;
+                String senhaBanco = null;
+                try {
+                    String query = "SELECT * FROM usuario;";
+                    Statement st = con.createStatement();
+                    ResultSet rs = st.executeQuery(query);
+                    while (rs.next()) {
+                        emailBanco = rs.getString("email");
+                        senhaBanco = rs.getString("senha");
+                    }
+                    st.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String response = null;
+                if (emailParam.equals(emailBanco) && senhaParam.equals(senhaBanco)) {
+                    response = "Usuário Logado! Email: " + emailBanco + ", Senha: " + senhaBanco;
+                    exchange.sendResponseHeaders(200, response.length());
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                } else {
+                    response = "Login Incorreto";
+                }
+
             }
         }
 
-        public void conectarBancoDeDados(String usuario, String senha) {
+        public Connection conectarBancoDeDados(String usuario, String senha) {
+            Connection con = null;
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gerenciamento-estoque",
-                "root",
-                "root");
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gerenciamento-estoque",
+                        "root",
+                        "root");
 
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+            return con;
         }
 
     }
