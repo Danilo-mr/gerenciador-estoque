@@ -75,7 +75,7 @@ public class Router {
                         parameters.get("confirme-senha"));
 
                 if(authService.isEmailAlreadyRegistered(parameters.get("email"))) {
-                    RouterUtils.sendMessageSignUpPage(exchange, "Email já registrado");
+                    RouterUtils.sendMessageSignUpPage(exchange, "Email ja registrado");
                 } else if (confirmPasswordOK) {
 
                     authService = new AuthService(new UserRepository());

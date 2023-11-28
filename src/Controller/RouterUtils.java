@@ -75,6 +75,7 @@ public class RouterUtils {
         try {
             String htmlContent = new String(Files.readAllBytes(Paths.get("src\\View\\HTMLs\\login.html")));
             htmlContent = htmlContent.replace("</h1>", "</h1><br><h4>"+message+"</h4>");
+            htmlContent = URLDecoder.decode(htmlContent, "UTF-8");
             exchange.sendResponseHeaders(200, htmlContent.length());
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(htmlContent.getBytes());
@@ -88,6 +89,7 @@ public class RouterUtils {
         try {
             String htmlContent = new String(Files.readAllBytes(Paths.get("src\\View\\HTMLs\\cadastro.html")));
             htmlContent = htmlContent.replace("</h1>", "</h1><br><h4>"+message+"</h4>");
+            htmlContent = URLDecoder.decode(htmlContent, "UTF-8");
             exchange.sendResponseHeaders(200, htmlContent.length());
             try (OutputStream os = exchange.getResponseBody()) {
                 os.write(htmlContent.getBytes());
