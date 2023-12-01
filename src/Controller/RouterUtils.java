@@ -52,8 +52,8 @@ public class RouterUtils {
         fs.close();
     }
 
-    static void sendDashboardHTML(HttpExchange exchange) throws IOException {
-        File file = new File("src\\View\\HTMLs\\dashboard.html");
+    static void sendEstoqueHTML(HttpExchange exchange) throws IOException {
+        File file = new File("src\\View\\HTMLs\\estoque.html");
         exchange.sendResponseHeaders(200, file.length());
         OutputStream output = exchange.getResponseBody();
         FileInputStream fs = new FileInputStream(file);

@@ -20,8 +20,20 @@ public class Router {
         server.createContext("/home", new HomeRouter());
         server.createContext("/login", new LoginRouter());
         server.createContext("/cadastro", new CadastroRouter());
+        server.createContext("/estoque", new EstoqueRouter());
     }
-     
+
+    public class EstoqueRouter implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            
+            if (exchange.getRequestMethod().equalsIgnoreCase("POST")) {
+                Map<String, String> parameters = RouterUtils.getParameters(exchange);
+                System.out.println(parameters.get("produto"));
+            }
+        }
+    }
+
     public class HomeRouter implements HttpHandler {
 
         @Override
@@ -48,7 +60,7 @@ public class Router {
                 userAuthenticated = authService.authenticateUser(parameters.get("email"), parameters.get("senha"));
 
                 if (userAuthenticated) {
-                    RouterUtils.sendDashboardHTML(exchange);
+                    RouterUtils.sendEstoqueHTML(exchange);
                 } else {
                     RouterUtils.sendMessageLoginPage(exchange, "Credenciais Incorretas");
                 }
@@ -74,7 +86,7 @@ public class Router {
                 boolean confirmPasswordOK = UserValidator.confirmPassword(parameters.get("senha"),
                         parameters.get("confirme-senha"));
 
-                if(authService.isEmailAlreadyRegistered(parameters.get("email"))) {
+                if (authService.isEmailAlreadyRegistered(parameters.get("email"))) {
                     RouterUtils.sendMessageSignUpPage(exchange, "Email ja registrado");
                 } else if (confirmPasswordOK) {
 
@@ -84,7 +96,7 @@ public class Router {
                             .registerNewUser(new User(parameters.get("email"), parameters.get("senha")));
 
                     if (registered) {
-                        RouterUtils.sendDashboardHTML(exchange);
+                        RouterUtils.sendEstoqueHTML(exchange);
                     }
 
                 } else {
@@ -93,7 +105,7 @@ public class Router {
 
                 }
             }
-        }  
+        }
     }
 
 }

@@ -14,7 +14,7 @@ public class UserRepository {
         Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gerenciamento-estoque",
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/estoque-gerenciamento",
                     "root",
                     "root");
 
@@ -25,6 +25,7 @@ public class UserRepository {
     }
 
     public boolean setNewUser(User user)  {
+        
         int linhasAfetadas;
         try {            
             String query = "INSERT INTO usuario (email, senha) VALUES (?, ?)";
